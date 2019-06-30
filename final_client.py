@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
-"""Script for Tkinter GUI chat client."""
-from socket import AF_INET, socket, SOCK_STREAM,SOCK_DGRAM,IPPROTO_UDP,SOL_SOCKET,SO_BROADCAST
+from socket import AF_INET, socket, SOCK_STREAM, SOCK_DGRAM, IPPROTO_UDP, SOL_SOCKET, SO_BROADCAST
 from threading import Thread
 import tkinter
+
 
 def find_free_port():
     tcp = socket(AF_INET, SOCK_STREAM)
@@ -17,12 +16,13 @@ def send_port():
     print("tcp port sent")
     Thread(target=receive_first_tcp).start()
     while True:
-        #print(message)
-        udp_client_socket.sendto(bytes(str(message),encoding="utf8"), ('<broadcast>', 34000)) 
-       
+        # print(message)
+        udp_client_socket.sendto(
+            bytes(str(message), encoding="utf8"), ('<broadcast>', 34000))
+
 
 def receive_udp():
-    msg = udp_listen.recv(BUFSIZ).decode("utf8")    
+    msg = udp_listen.recv(BUFSIZ).decode("utf8")
     #     udpbroadcastreviced = True
     #     servertcpport = msg
     #     ADDR = ("",msg)
@@ -30,22 +30,23 @@ def receive_udp():
     #msg_list.insert(tkinter.END, msg)
     udp_listen.close()
     Thread(target=send_port).start()
-    #print(msg)
+    # print(msg)
+
 
 def receive_first_tcp():
     """Handles receiving of messages."""
-    #tkinter.mainloop()  # Starts GUI execution.
-    print("im listening for first tcp in this port: "+ str(message))
-    
+    # tkinter.mainloop()  # Starts GUI execution.
+    print("im listening for first tcp in this port: " + str(message))
+
     client, client_address = client_socket.accept()
     #ADDR = add
     msg = str(client.recv(4).decode("utf8"))
-    print(msg," that's it")
-    a=int(msg)
-    client_socket2.connect(("localhost",a))
+    print(msg, " that's it")
+    a = int(msg)
+    client_socket2.connect(("localhost", a))
     Thread(target=receive, args=(client,)).start()
     #msg_list.insert(tkinter.END, msg)
-    
+
 
 def receive(client):
     """Handles receiving of messages."""
@@ -74,15 +75,19 @@ def on_closing(event=None):
     my_msg.set("{quit}")
     send()
 
+
+# ---------------gui-------------
 top = tkinter.Tk()
 top.title("TCP Chat")
 
 messages_frame = tkinter.Frame(top)
 my_msg = tkinter.StringVar()  # For the messages to be sent.
 my_msg.set("Type ...")
-scrollbar = tkinter.Scrollbar(messages_frame)  # To navigate through past messages.
+# To navigate through past messages.
+scrollbar = tkinter.Scrollbar(messages_frame)
 # Following will contain the messages.
-msg_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
+msg_list = tkinter.Listbox(messages_frame, height=15,
+                           width=50, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
 msg_list.pack()
@@ -95,21 +100,17 @@ send_button = tkinter.Button(top, text="Send", command=send)
 send_button.pack()
 
 top.protocol("WM_DELETE_WINDOW", on_closing)
+# ---------------gui-------------
 
-#----Now comes the sockets part----
-# HOST = input('Enter host: ')
-# PORT = input('Enter port: ')
-# if not PORT:
-#     PORT = 33000
-# else:
-#     PORT = int(PORT)
+# ----sockets part----
+
 message = find_free_port()
-print(message," this was the free port ")
+print(message, " this was the free port ")
 udpbroadcastreviced = False
 servertcpport = 76324
 
 BUFSIZ = 1024
-ADDR = ("",servertcpport)
+ADDR = ("", servertcpport)
 
 # udp_client_socket = socket(AF_INET, SOCK_DGRAM)
 # udp_client_socket.settimeout(1.0)
