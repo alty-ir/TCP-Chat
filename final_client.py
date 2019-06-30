@@ -18,7 +18,7 @@ def send_port():
     while True:
         # print(message)
         udp_client_socket.sendto(
-            bytes(str(message), encoding="utf8"), ('<broadcast>', 34000))
+            bytes(str(message), encoding="utf8"), ('localhost', 34000))
 
 
 def receive_udp():
